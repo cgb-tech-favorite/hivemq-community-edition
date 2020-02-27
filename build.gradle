@@ -51,7 +51,7 @@ mainClassName = 'com.hivemq.HiveMQServer'
 // Project Variables
 project.ext {
     // Project Dependency Versions
-    bouncycastlesVersion = '1.60'
+    bouncycastlesVersion = '1.64'
     jacksonVersion = '2.9.8'
     nettyVersion = '4.1.45.Final'
     xodusVersion = '1.2.3'
