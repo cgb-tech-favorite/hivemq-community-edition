@@ -16,6 +16,7 @@
 
 package com.hivemq.extensions.packets.publish;
 
+import com.google.common.primitives.ImmutableIntArray;
 import com.hivemq.extension.sdk.api.packets.general.Qos;
 import com.hivemq.extension.sdk.api.packets.publish.PayloadFormatIndicator;
 import com.hivemq.mqtt.message.publish.PUBLISH;
@@ -51,7 +52,7 @@ public class PublishPacketImplTest {
         assertEquals(publishPacket.getMessageExpiryInterval().get().longValue(), fullMqtt5Publish.getMessageExpiryInterval());
         assertEquals(publishPacket.getResponseTopic().get(), fullMqtt5Publish.getResponseTopic());
         assertArrayEquals(Bytes.getBytesFromReadOnlyBuffer(publishPacket.getCorrelationData()), fullMqtt5Publish.getCorrelationData());
-        assertEquals(publishPacket.getSubscriptionIdentifiers(), fullMqtt5Publish.getSubscriptionIdentifiers());
+        assertEquals(ImmutableIntArray.copyOf(publishPacket.getSubscriptionIdentifiers()), fullMqtt5Publish.getSubscriptionIdentifiers());
         assertEquals(publishPacket.getContentType().get(), fullMqtt5Publish.getContentType());
         assertArrayEquals(Bytes.getBytesFromReadOnlyBuffer(publishPacket.getPayload()), fullMqtt5Publish.getPayload());
         assertEquals(publishPacket.getUserProperties().asList().size(), fullMqtt5Publish.getUserProperties().getPluginUserProperties().asList().size());

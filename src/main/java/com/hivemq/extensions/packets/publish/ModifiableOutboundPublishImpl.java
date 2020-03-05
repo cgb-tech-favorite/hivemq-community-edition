@@ -17,6 +17,8 @@
 package com.hivemq.extensions.packets.publish;
 
 import com.google.common.base.Preconditions;
+import com.google.common.collect.ImmutableList;
+import com.google.common.primitives.ImmutableIntArray;
 import com.hivemq.extension.sdk.api.annotations.NotNull;
 import com.hivemq.extension.sdk.api.annotations.Nullable;
 import com.hivemq.configuration.service.FullConfigurationService;
@@ -59,7 +61,7 @@ public class ModifiableOutboundPublishImpl implements ModifiableOutboundPublish 
     private long messageExpiryInterval;
     private @Nullable String responseTopic;
     private @Nullable ByteBuffer correlationData;
-    private @Nullable List<Integer> subscriptionIdentifiers;
+    private @Nullable ImmutableIntArray subscriptionIdentifiers;
     private @Nullable String contentType;
     private @Nullable ByteBuffer payload;
     private final @NotNull ModifiableUserPropertiesImpl userProperties;
@@ -206,10 +208,11 @@ public class ModifiableOutboundPublishImpl implements ModifiableOutboundPublish 
         for (final Integer subscriptionIdentifier : subscriptionIdentifiers) {
             checkNotNull(subscriptionIdentifier, "At least one element of the subscription identifiers was null");
         }
-        if (this.subscriptionIdentifiers != null && this.subscriptionIdentifiers.equals(subscriptionIdentifiers)) {
+        final ImmutableIntArray immutableIntArray = ImmutableIntArray.copyOf(subscriptionIdentifiers);
+        if (this.subscriptionIdentifiers != null && this.subscriptionIdentifiers.equals(immutableIntArray)) {
             return;
         }
-        this.subscriptionIdentifiers = subscriptionIdentifiers;
+        this.subscriptionIdentifiers = immutableIntArray;
         this.modified = true;
     }
 
@@ -260,7 +263,10 @@ public class ModifiableOutboundPublishImpl implements ModifiableOutboundPublish 
 
     @Override
     public @NotNull List<Integer> getSubscriptionIdentifiers() {
-        return subscriptionIdentifiers != null ? subscriptionIdentifiers : Collections.emptyList();
+        if (subscriptionIdentifiers == null) {
+            return ImmutableList.of();
+        }
+        return subscriptionIdentifiers.asList();
     }
 
     @Override

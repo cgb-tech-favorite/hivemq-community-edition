@@ -16,6 +16,7 @@
 package com.hivemq.extensions.packets.publish;
 
 import com.google.common.collect.ImmutableList;
+import com.google.common.primitives.ImmutableIntArray;
 import com.hivemq.codec.encoder.mqtt5.Mqtt5PayloadFormatIndicator;
 import com.hivemq.configuration.service.FullConfigurationService;
 import com.hivemq.extension.sdk.api.packets.publish.PayloadFormatIndicator;
@@ -83,7 +84,7 @@ public class ModifiableOutboundPublishImplTest {
         assertEquals("modified response topic", mergePublishPacket.getResponseTopic());
         assertEquals(false, mergePublishPacket.isRetain());
         assertEquals(3, mergePublishPacket.getUserProperties().size());
-        assertEquals(123, mergePublishPacket.getSubscriptionIdentifiers().get(0).intValue());
+        assertEquals(123, mergePublishPacket.getSubscriptionIdentifiers().get(0));
 
         assertTrue(modifiableOutboundPublish.isModified());
 
@@ -104,7 +105,7 @@ public class ModifiableOutboundPublishImplTest {
         modifiableOutboundPublish.setTopic(origin.getTopic());
         modifiableOutboundPublish.setResponseTopic(origin.getResponseTopic());
         modifiableOutboundPublish.setRetain(origin.isRetain());
-        modifiableOutboundPublish.setSubscriptionIdentifiers(origin.getSubscriptionIdentifiers());
+        modifiableOutboundPublish.setSubscriptionIdentifiers(origin.getSubscriptionIdentifiers().asList());
 
         assertFalse(modifiableOutboundPublish.isModified());
 
@@ -387,7 +388,7 @@ public class ModifiableOutboundPublishImplTest {
         modifiableOutboundPublish.setSubscriptionIdentifiers(ImmutableList.of(123));
         final PUBLISH mergePublishPacket = PUBLISHFactory.mergePublishPacket(modifiableOutboundPublish, origin);
 
-        assertEquals(ImmutableList.of(123), mergePublishPacket.getSubscriptionIdentifiers());
+        assertEquals(ImmutableIntArray.of(123), mergePublishPacket.getSubscriptionIdentifiers());
         assertTrue(modifiableOutboundPublish.isModified());
     }
 }

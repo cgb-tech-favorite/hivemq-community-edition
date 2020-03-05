@@ -16,6 +16,7 @@
 
 package com.hivemq.extensions.packets.publish;
 
+import com.google.common.collect.ImmutableList;
 import com.hivemq.extension.sdk.api.annotations.NotNull;
 import com.hivemq.extension.sdk.api.packets.general.Qos;
 import com.hivemq.extension.sdk.api.packets.general.UserProperties;
@@ -99,7 +100,11 @@ public class PublishPacketImpl implements PublishPacket {
 
     @Override
     public @NotNull List<Integer> getSubscriptionIdentifiers() {
-        return publish.getSubscriptionIdentifiers() != null ? publish.getSubscriptionIdentifiers() : Collections.emptyList();
+        if (publish.getSubscriptionIdentifiers() != null) {
+            return publish.getSubscriptionIdentifiers().asList();
+        } else {
+            return ImmutableList.of();
+        }
     }
 
     @Override

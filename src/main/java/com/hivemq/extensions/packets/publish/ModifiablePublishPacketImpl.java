@@ -17,21 +17,21 @@
 package com.hivemq.extensions.packets.publish;
 
 import com.google.common.base.Preconditions;
-import com.hivemq.extension.sdk.api.annotations.NotNull;
-import com.hivemq.extension.sdk.api.annotations.Nullable;
+import com.google.common.collect.ImmutableList;
+import com.google.common.primitives.ImmutableIntArray;
 import com.hivemq.configuration.service.FullConfigurationService;
 import com.hivemq.configuration.service.MqttConfigurationService;
 import com.hivemq.configuration.service.RestrictionsConfigurationService;
 import com.hivemq.configuration.service.SecurityConfigurationService;
+import com.hivemq.extension.sdk.api.annotations.NotNull;
+import com.hivemq.extension.sdk.api.annotations.Nullable;
 import com.hivemq.extension.sdk.api.annotations.ThreadSafe;
 import com.hivemq.extension.sdk.api.packets.general.Qos;
-import com.hivemq.extension.sdk.api.packets.general.UserProperties;
 import com.hivemq.extension.sdk.api.packets.publish.ModifiablePublishPacket;
 import com.hivemq.extension.sdk.api.packets.publish.PayloadFormatIndicator;
 import com.hivemq.extensions.packets.general.InternalUserProperties;
 import com.hivemq.extensions.packets.general.ModifiableUserPropertiesImpl;
 import com.hivemq.extensions.services.builder.PluginBuilderUtil;
-import com.hivemq.mqtt.message.mqtt5.Mqtt5UserProperties;
 import com.hivemq.mqtt.message.publish.PUBLISH;
 import com.hivemq.util.Topics;
 
@@ -61,7 +61,7 @@ public class ModifiablePublishPacketImpl implements ModifiablePublishPacket {
     private long messageExpiryInterval;
     private @Nullable String responseTopic;
     private @Nullable ByteBuffer correlationData;
-    private final @Nullable List<Integer> subscriptionIdentifiers;
+    private final @Nullable ImmutableIntArray subscriptionIdentifiers;
     private @Nullable String contentType;
     private @Nullable ByteBuffer payload;
     private final @NotNull ModifiableUserPropertiesImpl userProperties;
@@ -124,7 +124,11 @@ public class ModifiablePublishPacketImpl implements ModifiablePublishPacket {
         this.messageExpiryInterval = messageExpiryInterval;
         this.responseTopic = responseTopic;
         this.correlationData = correlationData;
-        this.subscriptionIdentifiers = subscriptionIdentifiers;
+        if (subscriptionIdentifiers != null) {
+            this.subscriptionIdentifiers = ImmutableIntArray.copyOf(subscriptionIdentifiers);
+        } else {
+            this.subscriptionIdentifiers = ImmutableIntArray.of();
+        }
         this.contentType = contentType;
         this.payload = payload;
         this.userProperties = new ModifiableUserPropertiesImpl(userProperties, configurationService.securityConfiguration().validateUTF8());
@@ -302,7 +306,7 @@ public class ModifiablePublishPacketImpl implements ModifiablePublishPacket {
 
     @Override
     public @NotNull List<Integer> getSubscriptionIdentifiers() {
-        return subscriptionIdentifiers != null ? subscriptionIdentifiers : Collections.emptyList();
+        return subscriptionIdentifiers != null ? subscriptionIdentifiers.asList() : ImmutableList.of();
     }
 
     @Override

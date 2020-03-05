@@ -18,6 +18,7 @@ package com.hivemq.mqtt.message.publish;
 
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableList;
+import com.google.common.primitives.ImmutableIntArray;
 import com.hivemq.extension.sdk.api.annotations.NotNull;
 import com.hivemq.extension.sdk.api.annotations.Nullable;
 import com.hivemq.codec.encoder.mqtt5.Mqtt5PayloadFormatIndicator;
@@ -63,7 +64,7 @@ public class PUBLISHFactory {
         private @Nullable String responseTopic;
         private @Nullable byte[] correlationData;
         private boolean isNewTopicAlias;
-        private @Nullable ImmutableList<Integer> subscriptionIdentifiers;
+        private @Nullable ImmutableIntArray subscriptionIdentifiers;
         private @Nullable PublishPayloadPersistence persistence;
         private @NotNull Mqtt5UserProperties userProperties = Mqtt5UserProperties.NO_USER_PROPERTIES;
         private int packetIdentifier;
@@ -190,7 +191,7 @@ public class PUBLISHFactory {
         }
 
         @NotNull
-        public Mqtt5Builder withSubscriptionIdentifiers(final @Nullable ImmutableList<Integer> subscriptionIdentifiers) {
+        public Mqtt5Builder withSubscriptionIdentifiers(final @Nullable ImmutableIntArray subscriptionIdentifiers) {
             this.subscriptionIdentifiers = subscriptionIdentifiers;
             return this;
         }
@@ -387,7 +388,7 @@ public class PUBLISHFactory {
                 .withResponseTopic(publishPacket.getResponseTopic().orElse(null))
                 .withCorrelationData(Bytes.getBytesFromReadOnlyBuffer(publishPacket.getCorrelationData()))
                 .withNewTopicAlias(origin.isNewTopicAlias())
-                .withSubscriptionIdentifiers(ImmutableList.copyOf(publishPacket.getSubscriptionIdentifiers()))
+                .withSubscriptionIdentifiers(ImmutableIntArray.copyOf(publishPacket.getSubscriptionIdentifiers()))
                 .withUserProperties(Mqtt5UserProperties.of(userProperties.build()))
                 .build();
 
