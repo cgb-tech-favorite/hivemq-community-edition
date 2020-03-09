@@ -17,7 +17,6 @@
 package com.hivemq.extensions.packets.publish;
 
 import com.google.common.base.Preconditions;
-import com.google.common.collect.ImmutableList;
 import com.google.common.primitives.ImmutableIntArray;
 import com.hivemq.configuration.service.FullConfigurationService;
 import com.hivemq.configuration.service.MqttConfigurationService;
@@ -36,7 +35,6 @@ import com.hivemq.mqtt.message.publish.PUBLISH;
 import com.hivemq.util.Topics;
 
 import java.nio.ByteBuffer;
-import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -61,7 +59,7 @@ public class ModifiablePublishPacketImpl implements ModifiablePublishPacket {
     private long messageExpiryInterval;
     private @Nullable String responseTopic;
     private @Nullable ByteBuffer correlationData;
-    private final @Nullable ImmutableIntArray subscriptionIdentifiers;
+    private final @NotNull ImmutableIntArray subscriptionIdentifiers;
     private @Nullable String contentType;
     private @Nullable ByteBuffer payload;
     private final @NotNull ModifiableUserPropertiesImpl userProperties;
@@ -306,7 +304,7 @@ public class ModifiablePublishPacketImpl implements ModifiablePublishPacket {
 
     @Override
     public @NotNull List<Integer> getSubscriptionIdentifiers() {
-        return subscriptionIdentifiers != null ? subscriptionIdentifiers.asList() : ImmutableList.of();
+        return subscriptionIdentifiers.asList();
     }
 
     @Override
