@@ -88,7 +88,11 @@ public class ModifiablePublishPacketImpl implements ModifiablePublishPacket {
         this.messageExpiryInterval = publish.getMessageExpiryInterval();
         this.responseTopic = publish.getResponseTopic();
         this.correlationData = publish.getCorrelationData() != null ? ByteBuffer.wrap(publish.getCorrelationData()).asReadOnlyBuffer() : null;
-        this.subscriptionIdentifiers = publish.getSubscriptionIdentifiers();
+        if (publish.getSubscriptionIdentifiers() != null) {
+            this.subscriptionIdentifiers = publish.getSubscriptionIdentifiers();
+        } else {
+            this.subscriptionIdentifiers = ImmutableIntArray.of();
+        }
         this.contentType = publish.getContentType();
         this.payload = publish.getPayload() != null ? ByteBuffer.wrap(publish.getPayload()).asReadOnlyBuffer() : null;
         this.userProperties = new ModifiableUserPropertiesImpl(publish.getUserProperties().getPluginUserProperties(), configurationService.securityConfiguration().validateUTF8());

@@ -61,7 +61,7 @@ public class ModifiableOutboundPublishImpl implements ModifiableOutboundPublish 
     private long messageExpiryInterval;
     private @Nullable String responseTopic;
     private @Nullable ByteBuffer correlationData;
-    private @Nullable ImmutableIntArray subscriptionIdentifiers;
+    private @NotNull ImmutableIntArray subscriptionIdentifiers;
     private @Nullable String contentType;
     private @Nullable ByteBuffer payload;
     private final @NotNull ModifiableUserPropertiesImpl userProperties;
@@ -89,7 +89,11 @@ public class ModifiableOutboundPublishImpl implements ModifiableOutboundPublish 
         this.messageExpiryInterval = publish.getMessageExpiryInterval();
         this.responseTopic = publish.getResponseTopic();
         this.correlationData = publish.getCorrelationData() != null ? ByteBuffer.wrap(publish.getCorrelationData()).asReadOnlyBuffer() : null;
-        this.subscriptionIdentifiers = publish.getSubscriptionIdentifiers();
+        if (publish.getSubscriptionIdentifiers() == null) {
+            this.subscriptionIdentifiers = ImmutableIntArray.of();
+        } else {
+            this.subscriptionIdentifiers = publish.getSubscriptionIdentifiers();
+        }
         this.contentType = publish.getContentType();
         this.payload = publish.getPayload() != null ? ByteBuffer.wrap(publish.getPayload()).asReadOnlyBuffer() : null;
         this.userProperties = new ModifiableUserPropertiesImpl(publish.getUserProperties().getPluginUserProperties(), configurationService.securityConfiguration().validateUTF8());
@@ -263,9 +267,6 @@ public class ModifiableOutboundPublishImpl implements ModifiableOutboundPublish 
 
     @Override
     public @NotNull List<Integer> getSubscriptionIdentifiers() {
-        if (subscriptionIdentifiers == null) {
-            return ImmutableList.of();
-        }
         return subscriptionIdentifiers.asList();
     }
 

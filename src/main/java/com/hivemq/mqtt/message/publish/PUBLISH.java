@@ -316,7 +316,7 @@ public class PUBLISH extends MqttMessageWithUserProperties implements Mqtt3PUBLI
 
     @Nullable
     @Override
-    public @NotNull ImmutableIntArray getSubscriptionIdentifiers() {
+    public ImmutableIntArray getSubscriptionIdentifiers() {
         return subscriptionIdentifiers;
     }
 
